@@ -1,13 +1,15 @@
-# Note: You'll have to edit this makefile if you want to use it,
-#       but it shouldn't be hard if you know how to compile programs.
-
 CC = gcc
-CFLAGS = -Wall -O2 -I/opt/local/gnu/include
-LDFLAGS = -L/opt/local/gnu/lib -R/opt/local/gnu/lib
+CFLAGS = -Wall -O2
 LIBS = -lreadline -lncurses
 
+# Set these variables appropriately if your readline or ncurses libraries
+# are installed in non-standard locations.
+#
+# CPPFLAGS = -I/usr/local/include
+# LDFLAGS = -L/usr/local/lib -R/usr/local/lib
+
 edln: edln.c
-	$(CC) $(CFLAGS) $(LDFLAGS) $(LIBS) -o edln edln.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o edln edln.c $(LIBS)
 
 clean:
 	-rm -f edln *~
