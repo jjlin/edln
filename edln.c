@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <readline/readline.h>
 
-#define BUFLEN 512
+#define BUFLEN 4096
 
 char buf[BUFLEN];
 
