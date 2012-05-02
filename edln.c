@@ -1,13 +1,9 @@
-/* edln - a simple readline-based utility for interactively editing
- *        the target of a symbolic link.
+/* edln - a simple readline-based utility for interactively editing the
+ * target of a symbolic link.
  *
- * Written by Jeremy Lin <jjlin@OCF.Berkeley.EDU>.
+ * Author: Jeremy Lin <jjlin@cs.stanford.edu>
+ *
  * Placed in the public domain.
- *
- * Revision history:
- * 
- * 12/30/2002: Initial revision.
- * 05/01/2004: Added check for empty symlink name.
  */
 
 #include <stdio.h>
