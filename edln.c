@@ -47,6 +47,19 @@ int main(int argc, char** argv)
 	return EXIT_SUCCESS;
     }
 
+    /* If there is a trailing slash in the symlink path, remove it.
+     *
+     * When performing filename completion on a symlink, shells often add a
+     * trailing slash when the symlink points to a directory. However, this
+     * trailing slash will cause readlink() to fail.
+     */
+    {
+        char* last_char = link_name + strlen(link_name) - 1;
+        if (last_char > link_name && *last_char == '/') {
+            *last_char = '\0';
+        }
+    }
+
     /* Read the original symlink target. */
     if (readlink(link_name, buf, sizeof(buf)) < 0)
 	goto error;
