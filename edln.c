@@ -19,7 +19,7 @@ char buf[BUFLEN];
 int init_rl_line_buffer(void)
 {
     rl_replace_line(buf, 0);
-    rl_point = rl_end; /* move cursor to end of line */
+    rl_point = rl_end; /* Move cursor to end of line. */
     rl_redisplay();
     return 0;
 }
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 	return EXIT_SUCCESS;
     }
 
-    /* read original target of symlink */
+    /* Read the original symlink target. */
     if (readlink(link_name, buf, sizeof(buf)) < 0)
 	goto error;
 
@@ -67,11 +67,11 @@ int main(int argc, char** argv)
 	}
     }
 
-    /* remove original symlink */
+    /* Remove the original symlink. */
     if (unlink(link_name) < 0)
 	goto error;
 
-    /* write out new symlink */
+    /* Write out the updated symlink. */
     if (symlink(new_target, link_name) < 0)
 	goto error;
 
