@@ -24,6 +24,20 @@ int init_rl_line_buffer(void)
     return 0;
 }
 
+void customize_rl_completion_behavior(void)
+{
+    /* Don't break on any of the typical word break characters. This would
+     * cause filename completion to fail on filenames that contain spaces or
+     * other "unusual" characters.
+     */
+    rl_completer_word_break_characters = "";
+
+    /* Don't append a space character to a fully-completed filename.
+     * This would just result in a broken symlink.
+     */
+    rl_completion_append_character = '\0';
+}
+
 void error(const char* msg)
 {
     fprintf(stderr, "%s\n", msg);
@@ -65,6 +79,7 @@ int main(int argc, char** argv)
         goto error;
 
     if (new_target == NULL) {
+        customize_rl_completion_behavior();
         rl_extend_line_buffer(BUFLEN+1);
         rl_pre_input_hook = &init_rl_line_buffer;
 
