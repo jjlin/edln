@@ -37,14 +37,14 @@ int main(int argc, char** argv)
 
     switch (argc) {
     case 3:
-	new_target = argv[2];
-	/* FALL THROUGH */
+        new_target = argv[2];
+        /* FALL THROUGH */
     case 2:
-	link_name = argv[1];
-	break;
+        link_name = argv[1];
+        break;
     default:
-	fprintf(stderr, "usage: %s symlink_to_edit [new_target]\n", argv[0]);
-	return EXIT_SUCCESS;
+        fprintf(stderr, "usage: %s symlink_to_edit [new_target]\n", argv[0]);
+        return EXIT_SUCCESS;
     }
 
     /* If there is a trailing slash in the symlink path, remove it.
@@ -62,31 +62,31 @@ int main(int argc, char** argv)
 
     /* Read the original symlink target. */
     if (readlink(link_name, buf, sizeof(buf)) < 0)
-	goto error;
+        goto error;
 
     if (new_target == NULL) {
-	rl_extend_line_buffer(BUFLEN+1);
-	rl_pre_input_hook = &init_rl_line_buffer;
+        rl_extend_line_buffer(BUFLEN+1);
+        rl_pre_input_hook = &init_rl_line_buffer;
 
-	if ( (new_target = readline("New target: ")) == NULL)
-	    error("No input received, aborting.");
+        if ( (new_target = readline("New target: ")) == NULL)
+            error("No input received, aborting.");
 
-	if (!strcmp(new_target, buf)) {
-	    /* new target same as old target, so don't make any changes */
-	    return EXIT_SUCCESS;
-	} else if (*new_target == '\0') {
-	    /* empty target */
-	    error("Can't symlink to empty filename.");
-	}
+        if (!strcmp(new_target, buf)) {
+            /* new target same as old target, so don't make any changes */
+            return EXIT_SUCCESS;
+        } else if (*new_target == '\0') {
+            /* empty target */
+            error("Can't symlink to empty filename.");
+        }
     }
 
     /* Remove the original symlink. */
     if (unlink(link_name) < 0)
-	goto error;
+        goto error;
 
     /* Write out the updated symlink. */
     if (symlink(new_target, link_name) < 0)
-	goto error;
+        goto error;
 
     return EXIT_SUCCESS;
 
