@@ -38,6 +38,23 @@ void customize_rl_completion_behavior(void)
     rl_completion_append_character = '\0';
 }
 
+/* Change to the directory containing the symlink, so that filename
+ * completions are performed relative to that directory.
+ */
+void change_to_symlink_dir(char* link_path)
+{
+    /* Find the last slash in the symlink path, if any. */
+    int i;
+    for (i = strlen(link_path) - 1; i > 0; --i) {
+        if (link_path[i] == '/') {
+            link_path[i] = '\0'; /* Temporarily truncate at the slash. */
+            chdir(link_path);
+            link_path[i] = '/'; /* Restore the slash. */
+            break;
+        }
+    }
+}
+
 void error(const char* msg)
 {
     fprintf(stderr, "%s\n", msg);
@@ -46,7 +63,7 @@ void error(const char* msg)
 
 int main(int argc, char** argv)
 {
-    char* link_name = NULL;
+    char* link_path = NULL;
     char* new_target = NULL;
 
     switch (argc) {
@@ -54,7 +71,7 @@ int main(int argc, char** argv)
         new_target = argv[2];
         /* FALL THROUGH */
     case 2:
-        link_name = argv[1];
+        link_path = argv[1];
         break;
     default:
         fprintf(stderr, "usage: %s symlink_to_edit [new_target]\n", argv[0]);
@@ -68,17 +85,18 @@ int main(int argc, char** argv)
      * trailing slash will cause readlink() to fail.
      */
     {
-        char* last_char = link_name + strlen(link_name) - 1;
-        if (last_char > link_name && *last_char == '/') {
+        char* last_char = link_path + strlen(link_path) - 1;
+        if (last_char > link_path && *last_char == '/') {
             *last_char = '\0';
         }
     }
 
     /* Read the original symlink target. */
-    if (readlink(link_name, buf, sizeof(buf)) < 0)
+    if (readlink(link_path, buf, sizeof(buf)) < 0)
         goto error;
 
     if (new_target == NULL) {
+        change_to_symlink_dir(link_path);
         customize_rl_completion_behavior();
         rl_extend_line_buffer(BUFLEN+1);
         rl_pre_input_hook = &init_rl_line_buffer;
@@ -87,20 +105,20 @@ int main(int argc, char** argv)
             error("No input received, aborting.");
 
         if (!strcmp(new_target, buf)) {
-            /* new target same as old target, so don't make any changes */
+            /* New target same as old target, so don't make any changes. */
             return EXIT_SUCCESS;
         } else if (*new_target == '\0') {
-            /* empty target */
+            /* Empty target. */
             error("Can't symlink to empty filename.");
         }
     }
 
     /* Remove the original symlink. */
-    if (unlink(link_name) < 0)
+    if (unlink(link_path) < 0)
         goto error;
 
     /* Write out the updated symlink. */
-    if (symlink(new_target, link_name) < 0)
+    if (symlink(new_target, link_path) < 0)
         goto error;
 
     return EXIT_SUCCESS;
