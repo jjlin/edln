@@ -1,10 +1,11 @@
-/* edln - a simple readline-based utility for interactively editing the
- * target of a symbolic link.
- *
- * Author: Jeremy Lin <jjlin@cs.stanford.edu>
- *
- * Placed in the public domain.
- */
+/*
+** edln - a simple readline-based utility for interactively editing the
+** target of a symbolic link.
+**
+** Author: Jeremy Lin <jjlin@cs.stanford.edu>
+**
+** Placed in the public domain.
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,21 +27,24 @@ int init_rl_line_buffer(void)
 
 void customize_rl_completion_behavior(void)
 {
-    /* Don't break on any of the typical word break characters. This would
-     * cause filename completion to fail on filenames that contain spaces or
-     * other "unusual" characters.
-     */
+    /*
+    ** Don't break on any of the typical word break characters. This would
+    ** cause filename completion to fail on filenames that contain spaces or
+    ** other "unusual" characters.
+    */
     rl_completer_word_break_characters = "";
 
-    /* Don't append a space character to a fully-completed filename.
-     * This would just result in a broken symlink.
-     */
+    /*
+    ** Don't append a space character to a fully-completed filename.
+    ** This would just result in a broken symlink.
+    */
     rl_completion_append_character = '\0';
 }
 
-/* Change to the directory containing the symlink, so that filename
- * completions are performed relative to that directory.
- */
+/*
+** Change to the directory containing the symlink, so that filename
+** completions are performed relative to that directory.
+*/
 void change_to_symlink_dir(char* link_path)
 {
     /* Find the last slash in the symlink path, if any. */
@@ -78,12 +82,13 @@ int main(int argc, char** argv)
         return EXIT_SUCCESS;
     }
 
-    /* If there is a trailing slash in the symlink path, remove it.
-     *
-     * When performing filename completion on a symlink, shells often add a
-     * trailing slash when the symlink points to a directory. However, this
-     * trailing slash will cause readlink() to fail.
-     */
+    /*
+    ** If there is a trailing slash in the symlink path, remove it.
+    **
+    ** When performing filename completion on a symlink, shells often add a
+    ** trailing slash when the symlink points to a directory. However, this
+    ** trailing slash will cause readlink() to fail.
+    */
     {
         char* last_char = link_path + strlen(link_path) - 1;
         if (last_char > link_path && *last_char == '/') {
