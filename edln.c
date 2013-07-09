@@ -55,7 +55,10 @@ void change_to_symlink_dir(char* link_path)
     for (i = strlen(link_path) - 1; i > 0; --i) {
         if (link_path[i] == '/') {
             link_path[i] = '\0'; /* Temporarily truncate at the slash. */
-            chdir(link_path);
+            if (chdir(link_path) < 0) {
+                fprintf(stderr, "Warning: Couldn't chdir() to '%s': ", link_path);
+                perror(NULL);
+            }
             link_path[i] = '/'; /* Restore the slash. */
             break;
         }
