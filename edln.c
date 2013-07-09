@@ -28,6 +28,29 @@ int init_rl_line_buffer(void)
     return 0;
 }
 
+char* edln_rl_filename_completion_function(const char* text, int state)
+{
+    /*
+    ** N.B. There are two ways to make this space-suppression customization.
+    ** The original method is to set 'rl_completion_append_character' to the
+    ** NUL character. The alternate method, which was introduced in Readline
+    ** 4.3, is to set 'rl_completion_suppress_append' to a nonzero value.
+    ** Digging through the Readline source code reveals that, surprisingly,
+    ** 'rl_completion_suppress_append' has always been completely redundant.
+    ** There was a time when it seemed to have been intended to also suppress
+    ** appending a '/' character to directories, but this was never actually
+    ** put into effect.
+    **
+    ** In any case, Readline resets both variables to their default values
+    ** before every call to the completion function, hence the need for this
+    ** wrapper function, which sets one of them back to our desired value.
+    */
+    rl_completion_append_character = '\0';
+
+    /* Call out to Readline's built-in filename completion function. */
+    return rl_filename_completion_function(text, state);
+}
+
 void customize_rl_completion_behavior(void)
 {
     /*
@@ -40,8 +63,10 @@ void customize_rl_completion_behavior(void)
     /*
     ** Don't append a space character to a fully-completed filename.
     ** This would just result in a broken symlink.
+    **
+    ** This customization requires use of a custom completion function.
     */
-    rl_completion_append_character = '\0';
+    rl_completion_entry_function = &edln_rl_filename_completion_function;
 }
 
 /*
