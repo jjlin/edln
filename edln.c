@@ -132,7 +132,8 @@ int main(int argc, char** argv)
         rl_extend_line_buffer(BUFLEN+1);
         rl_pre_input_hook = &init_rl_line_buffer;
 
-        if ( (new_target = readline("New target: ")) == NULL)
+        new_target = readline("New target: ");
+        if (new_target == NULL)
             fatal_error("No input received, aborting.");
 
         if (!strcmp(new_target, buf)) {
