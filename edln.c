@@ -11,7 +11,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <readline/readline.h>
@@ -138,8 +138,8 @@ int main(int argc, char** argv)
         }
     }
 
-    /* Read the original symlink target. */
-    if (readlink(link_path, buf, sizeof(buf)) < 0) {
+    /* Read the original symlink target. 'buf' is already zero-filled. */
+    if (readlink(link_path, buf, sizeof(buf)-1) < 0) {
         /* Print less-cryptic messages for the most common errors. */
         switch (errno) {
         case ENOENT:
