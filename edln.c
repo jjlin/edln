@@ -16,6 +16,10 @@
 
 #include <readline/readline.h>
 
+/*
+** This length corresponds to PATH_MAX on Linux (which has one of the larger
+** PATH_MAX values around). This length includes the NUL terminator.
+*/
 #define BUFLEN 4096
 
 char buf[BUFLEN];
