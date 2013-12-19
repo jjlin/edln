@@ -94,6 +94,19 @@ void change_to_symlink_dir(char* link_path)
     }
 }
 
+/*
+** Remove extraneous trailing slash ('/') characters in-place:
+**
+**   "foo///" => "foo", but "///" => "/"
+*/
+void remove_trailing_slashes(char* path)
+{
+    char* last_char = path + strlen(path) - 1;
+    while (last_char > path && *last_char == '/') {
+        *last_char-- = '\0';
+    }
+}
+
 void fatal_error(const char* fmt, ...)
 {
     char msg[BUFLEN];
@@ -135,12 +148,7 @@ int main(int argc, char** argv)
     ** trailing slash when the symlink points to a directory. However, this
     ** trailing slash will cause readlink() to fail.
     */
-    {
-        char* last_char = link_path + strlen(link_path) - 1;
-        if (last_char > link_path && *last_char == '/') {
-            *last_char = '\0';
-        }
-    }
+    remove_trailing_slashes(link_path);
 
     /* Read the original symlink target. 'buf' is already zero-filled. */
     if (readlink(link_path, buf, sizeof(buf)-1) < 0) {
@@ -167,6 +175,13 @@ int main(int argc, char** argv)
         new_target = readline("New target: ");
         if (new_target == NULL)
             fatal_error("No input received, aborting.");
+
+        /*
+        ** Remove trailing slash(es) from the target. This typically occurs
+        ** when Readline completes a directory name, but if the existing
+        ** target had trailing slashes, they will be removed as well.
+        */
+        remove_trailing_slashes(new_target);
 
         if (!strcmp(new_target, buf)) {
             /* New target same as old target, so don't make any changes. */
