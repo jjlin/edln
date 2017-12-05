@@ -22,11 +22,15 @@
 */
 #define BUFLEN 4096
 
-char buf[BUFLEN];
+/* Stores the original symlink target. */
+char orig_target[BUFLEN];
+
+/* Stores the original working directory. */
+char orig_wd[BUFLEN];
 
 int init_rl_line_buffer(void)
 {
-    rl_replace_line(buf, 0);
+    rl_replace_line(orig_target, 0);
     rl_point = rl_end; /* Move cursor to end of line. */
     rl_redisplay();
     return 0;
@@ -150,8 +154,8 @@ int main(int argc, char** argv)
     */
     remove_trailing_slashes(link_path);
 
-    /* Read the original symlink target. 'buf' is already zero-filled. */
-    if (readlink(link_path, buf, sizeof(buf)-1) < 0) {
+    /* Read the original symlink target. 'orig_target' is already zero-filled. */
+    if (readlink(link_path, orig_target, sizeof(orig_target)-1) < 0) {
         /* Print less-cryptic messages for the most common errors. */
         switch (errno) {
         case ENOENT:
@@ -167,6 +171,7 @@ int main(int argc, char** argv)
     }
 
     if (new_target == NULL) {
+        getcwd(orig_wd, sizeof(orig_wd));
         change_to_symlink_dir(link_path);
         customize_rl_completion_behavior();
         rl_extend_line_buffer(BUFLEN+1);
@@ -183,12 +188,21 @@ int main(int argc, char** argv)
         */
         remove_trailing_slashes(new_target);
 
-        if (!strcmp(new_target, buf)) {
+        if (!strcmp(new_target, orig_target)) {
             /* New target same as old target, so don't make any changes. */
             exit(EXIT_SUCCESS);
         } else if (*new_target == '\0') {
             fatal_error("Can't symlink to an empty target.");
         }
+    }
+
+    /*
+    ** Change back to the original working directory so that unlink() executes
+    ** relative to that.
+    */
+    if (chdir(orig_wd) < 0) {
+        fprintf(stderr, "Warning: Couldn't chdir() back to '%s': ", orig_wd);
+        perror(NULL);
     }
 
     /* Remove the original symlink. */
