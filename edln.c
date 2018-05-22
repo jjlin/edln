@@ -171,7 +171,9 @@ int main(int argc, char** argv)
     }
 
     if (new_target == NULL) {
-        getcwd(orig_wd, sizeof(orig_wd));
+        if (!getcwd(orig_wd, sizeof(orig_wd))) {
+            fatal_error("getcwd() failed (buffer too small).");
+        }
         change_to_symlink_dir(link_path);
         customize_rl_completion_behavior();
         rl_extend_line_buffer(BUFLEN+1);
