@@ -1,9 +1,10 @@
+[![Build Status](https://travis-ci.org/jjlin/edln.svg?branch=master)](https://travis-ci.org/jjlin/edln)
+
 ## Introduction
 
 `edln` is a simple readline-based utility for interactively editing the target
 of a symbolic link. This is most useful if you only need to make a relatively
 minor change to the symlink.
-
 
 ## Using `edln`
 
@@ -40,15 +41,13 @@ will not accomplish this -- instead, it will create inside `dir1` a new symlink
 `dir2` (that points to `dir2`). In contrast, running `edln foo dir2` or
 `ln -sfT dir2 foo` will have the desired effect.
 
-
 ## Pre-Built Binaries
 
-Binaries for select platforms are available at:
+Binaries for CentOS and Ubuntu are available at:
 
-  https://github.com/jjlin/edln/downloads
+  https://github.com/jjlin/edln/releases
 
 For other platforms, `edln` should not be difficult to build from source.
-
 
 ## Building From Source
 

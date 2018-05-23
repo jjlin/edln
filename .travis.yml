@@ -1,0 +1,36 @@
+language: bash
+
+# Enable Docker.
+sudo: required
+services:
+  - docker
+
+# Update to the latest `docker-ce` package.
+#
+# See <https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json>
+# for the list of package sources recognized by default. 
+addons:
+  apt:
+    packages:
+      - docker-ce
+
+script:
+  - ./docker-build.sh centos 6
+  - ./docker-build.sh centos 7
+  - ./docker-build.sh ubuntu trusty
+  - ./docker-build.sh ubuntu xenial
+  - ./docker-build.sh ubuntu bionic
+  - ls -al
+
+# Docs: <https://docs.travis-ci.com/user/deployment/releases/>
+deploy:
+  provider: releases
+  on:
+    repo: jjlin/edln
+    tags: true
+  file_glob: true
+  file: edln-*
+  overwrite: true
+  skip_cleanup: true
+  api_key:
+    secure: LV3eu7Bb8+qQseze3FFPY0AtWqxFcwNjQOCS14oNhewlPz5YMMajVJdIvJQVTMQKgbJjhGrmgDQ4wSZX2rmQg3eCwhc5r27/KgReOLK+jB0+b83Hs2RSe1XmwB1ihflQhfMjmqB1u5SFYpMyvd9QQpw7ummkNCA6c6jbb9BI42zZhil4lpwzak8/6X/KfGKRi9gi1Q0yJClyi4VEKeZDvfxLEJUeB4AC45+G1uJkaIqVzQ6VhElVSzW4D34zIVrJQpuj/PdU/ARBDE3aKQhdutwI5zILjJ3UsjXHXUxh7mpaozF0L1viUYkVS7Mdyya3kAdefBS4S7Vt0qVbxUjfzJw85FkEA/EwxUlcKLsDo7FHYfRWfuPtb98CIt16orlW2Zl5HpfrC83nYchUK3rJUPTz8TcTJpEFHA9rCzeRFQD/JF+E7QaMe7NH6J4ZL0T4iOZuzkKmWLnI0xkDMW+MXJlPMpUXDlO3Yn2/tLW9xWwn0t42Tl4yzOHIPU6CDhrgubve9Sn8B1uH8qr1ns+TxmCfoXeno1C4BJYM6JuQPvjOHWEgCdaKBxvVnXsirChFfQhR3bkzRbagFEpFX6wOf+iiHYFVf5lUeNa9pC3iYV5G0qSu+PeNbbQ/q5954mEpB/wIOM3alni1/Xu1o3W3RPZRmF+CS6ksiQHZH8qQmSs=
