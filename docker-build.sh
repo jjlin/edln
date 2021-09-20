@@ -12,14 +12,14 @@ build_dir='/build'
 container_name='edln'
 
 function docker-exec() {
-    docker exec -it "${container_name}" "$@"
+    docker exec -t "${container_name}" "$@"
 }
 
 # Delete the container from any previous run.
 docker rm -f "${container_name}" 2>/dev/null
 
 # Start a new container, mounting in the source repo.
-docker run -itd --name "${container_name}" \
+docker run -td --name "${container_name}" \
        --volume "$(pwd)":${build_dir} \
        --workdir ${build_dir} \
        "${distro}":"${tag}" \

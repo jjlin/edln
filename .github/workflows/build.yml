@@ -1,0 +1,31 @@
+name: build
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to (re)build
+        required: true
+
+jobs:
+  build:
+    name: Build and release `edln` binaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      - name: Build binaries
+        run: |
+          ./docker-build.sh centos 7
+          ./docker-build.sh centos 8
+          ./docker-build.sh ubuntu xenial
+          ./docker-build.sh ubuntu bionic
+          ./docker-build.sh ubuntu focal
+
+      - name: Upload release artifacts
+        uses: softprops/action-gh-release@v1 # https://github.com/softprops/action-gh-release
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+          files: |
+            edln-*

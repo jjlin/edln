@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jjlin/edln.svg?branch=master)](https://travis-ci.org/jjlin/edln)
+[![Build Status](https://github.com/jjlin/edln/actions/workflows/build.yml/badge.svg)](https://github.com/jjlin/edln/actions/workflows/build.yml)
 
 ## Introduction
 
