@@ -19,9 +19,9 @@ jobs:
         run: |
           ./docker-build.sh centos 7
           ./docker-build.sh centos 8
-          ./docker-build.sh ubuntu xenial
-          ./docker-build.sh ubuntu bionic
-          ./docker-build.sh ubuntu focal
+          ./docker-build.sh ubuntu 16.04
+          ./docker-build.sh ubuntu 18.04
+          ./docker-build.sh ubuntu 20.04
 
       - name: Upload release artifacts
         uses: softprops/action-gh-release@v1 # https://github.com/softprops/action-gh-release
