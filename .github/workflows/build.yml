@@ -27,5 +27,6 @@ jobs:
         uses: softprops/action-gh-release@v1 # https://github.com/softprops/action-gh-release
         with:
           tag_name: ${{ github.event.inputs.tag }}
+          body: '&nbsp;'
           files: |
             edln-*
